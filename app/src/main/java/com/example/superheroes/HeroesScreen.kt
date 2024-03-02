@@ -29,6 +29,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+//import androidx.compose.foundation.layout.FlowRowScopeInstance.weight
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -66,42 +67,44 @@ fun HeroesList(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-    val visibleState = remember {
-        MutableTransitionState(false).apply {
-            // Start the animation immediately.
-            targetState = true
-        }
-    }
+//    val visibleState = remember {
+//        MutableTransitionState(false).apply {
+//            // Start the animation immediately.
+//            targetState = true
+//        }
+//    }
 
     // Fade in entry animation for the entire list
-    AnimatedVisibility(
-        visibleState = visibleState,
-        enter = fadeIn(
-            animationSpec = spring(dampingRatio = DampingRatioLowBouncy)
-        ),
-        exit = fadeOut(),
-        modifier = modifier
-    ) {
-        LazyColumn(contentPadding = contentPadding) {
+//    AnimatedVisibility(
+//        visibleState = visibleState,
+//        enter = fadeIn(
+//            animationSpec = spring(dampingRatio = DampingRatioLowBouncy)
+//        ),
+//        exit = fadeOut(),
+//        modifier = modifier
+//    ) {
+        LazyColumn(
+            //contentPadding = contentPadding
+        ) {
             itemsIndexed(heroes) { index, hero ->
                 HeroListItem(
                     hero = hero,
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         // Animate each list item to slide in vertically
-                        .animateEnterExit(
-                            enter = slideInVertically(
-                                animationSpec = spring(
-                                    stiffness = StiffnessVeryLow,
-                                    dampingRatio = DampingRatioLowBouncy
-                                ),
-                                initialOffsetY = { it * (index + 1) } // staggered entrance
-                            )
-                        )
+//                        .animateEnterExit(
+//                            enter = slideInVertically(
+//                                animationSpec = spring(
+//                                    stiffness = StiffnessVeryLow,
+//                                    dampingRatio = DampingRatioLowBouncy
+//                                ),
+//                                initialOffsetY = { it * (index + 1) } // staggered entrance
+//                            )
+//                        )
                 )
             }
         }
-    }
+//    }
 }
 
 @Composable
@@ -119,31 +122,44 @@ fun HeroListItem(
                 .padding(16.dp)
                 .sizeIn(minHeight = 72.dp)
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(hero.nameRes),
-                    style = MaterialTheme.typography.displaySmall
-                )
-                Text(
-                    text = stringResource(hero.descriptionRes),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+            Box(modifier = Modifier.Companion.weight(1f)
+                ){
+            HeroInfo(hero)
             }
             Spacer(Modifier.width(16.dp))
-            Box(
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(RoundedCornerShape(8.dp))
-
-            ) {
-                Image(
-                    painter = painterResource(hero.imageRes),
-                    contentDescription = null,
-                    alignment = Alignment.TopCenter,
-                    contentScale = ContentScale.FillWidth
-                )
-            }
+            HeroIcon(hero)
         }
+    }
+}
+
+@Composable
+private fun HeroInfo(hero: Hero) {
+    Column() {
+        Text(
+            text = stringResource(hero.nameRes),
+            style = MaterialTheme.typography.displaySmall
+        )
+        Text(
+            text = stringResource(hero.descriptionRes),
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
+}
+
+@Composable
+private fun HeroIcon(hero: Hero) {
+    Box(
+        modifier = Modifier
+            .size(72.dp)
+            .clip(RoundedCornerShape(8.dp))
+
+    ) {
+        Image(
+            painter = painterResource(hero.imageRes),
+            contentDescription = null,
+            alignment = Alignment.TopCenter,
+            contentScale = ContentScale.FillWidth
+        )
     }
 }
 
